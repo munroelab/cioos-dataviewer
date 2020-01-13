@@ -10,6 +10,11 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 
 OpenTopoMap.addTo(map)
 
+//Fetching .json file using URL
+fetch("https://cioosatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary", {mode : 'no-cors'})
+.then(response => {return response.json})
+.then(data => { document.getElementById("demo").innerHTML = data['rows'] + ' -> This comes from Data!'});
+
 
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -63,3 +68,4 @@ d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_data
         )
 
 })
+
