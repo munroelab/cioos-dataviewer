@@ -1,6 +1,6 @@
 var map = L.map('map', {
-    center: [47.570608, -52.720862],
-    zoom: 5
+    center: [47.570608, -54.720862],
+    zoom: 4
 });
 
 var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
@@ -87,10 +87,14 @@ function Aclosure() {
   return function handleData(data) {
     var coords = [];
     for (i = 1; i < data['table']["rows"].length; i++){
-        coords[i] = [data['table']["rows"][i][7],data['table']["rows"][i][10]]
+        coords[i] = [data['table']["rows"][i][10],data['table']["rows"][i][7]]
     }
-
-    return document.getElementById("demo").innerHTML = coords + ' minlan and minlat';
+    for (i = 1; i < coords.length; i++){
+      var apoint = L.marker(coords[i]).addTo(map);
+      apoint.bindPopup(popupFunc);
+      OpenTopoMap.addTo(map);
+    }
+    return document.getElementById("demo").innerHTML = coords[1] + ' minlan and minlat';
   };
 }
 //Fetching .json file using URL
