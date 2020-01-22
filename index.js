@@ -82,7 +82,7 @@ OpenTopoMap.addTo(map);
 
 
 
-//Defininf a function to handle data
+//Defining a function to handle data
 function Aclosure() {
   return function handleData(data) {
     var coords = [];
