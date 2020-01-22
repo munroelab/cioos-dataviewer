@@ -80,9 +80,25 @@ svg.append("path")
 myDataPoint.bindPopup(popupFunc);
 OpenTopoMap.addTo(map);
 
+
+
+//Defininf a function to handle data
+function Aclosure() {
+  return function handleData(data) {
+    var coords = [];
+    for (i = 1; i < data['table']["rows"].length; i++){
+        coords[i] = [data['table']["rows"][i][7],data['table']["rows"][i][10]]
+    }
+
+    return document.getElementById("demo").innerHTML = coords + ' minlan and minlat';
+  };
+}
 //Fetching .json file using URL
 fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary")
 .then(response => {return response.json()})
-.then(data => { console.log(data); document.getElementById("demo").innerHTML = data['table']['rows'] + ' -> This comes from Data!'});
+.then(  
+  Aclosure()
+  );
+
 
 
