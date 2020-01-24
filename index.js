@@ -11,29 +11,30 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 var myDataPoint = L.marker([47.575232, -52.732506]).addTo(map);
 
 
-function popupFunc() {
+function popupFunc(station_name, coordination) {
+  //console.log(station_name)
 
-    var popupElem = document.createElement("div");
-
-    var node = document.createTextNode("This is new.");
+    var popupElem = document.createElement("div");   
+    //adding the information retrieved from data to the popup
+    var node = document.createTextNode("Station name: " + station_name); 
+    var node1 = document.createTextNode(" Coordinates: " + coordination);
     popupElem.appendChild(node);
-
-
+    popupElem.appendChild(node1);
+    
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 60},
-width = 460 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
+    var margin = {top: 10, right: 20, bottom: 30, left: 40},
+    width = 220 - margin.left - margin.right,
+    height = 160- margin.top - margin.bottom;
 
 // append the svg object to the body of the page
-  svg = d3.select(popupElem)
-.append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
-.append("g")
-.attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+    svg = d3.select(popupElem)
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-     
 
 //Read the data
 d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
@@ -73,7 +74,7 @@ svg.append("path")
     )
 
 })
-
+    
     return popupElem;
 }
 
@@ -81,17 +82,29 @@ myDataPoint.bindPopup(popupFunc);
 OpenTopoMap.addTo(map);
 
 
-
 //Defining a function to handle data
 function Aclosure() {
   return function handleData(data) {
     var coords = [];
+    var station_name=[];
+  
     for (i = 1; i < data['table']["rows"].length; i++){
+        //console.log("data: ", data['table']["rows"][i] )
         coords[i] = [data['table']["rows"][i][10],data['table']["rows"][i][7]]
+        //getting the name of each station
+        station_name[i]= data['table']["rows"][i][6]
+        //console.log("station name: ", station_name[1]);
     }
     for (i = 1; i < coords.length; i++){
-      var apoint = L.marker(coords[i]).addTo(map);
-      apoint.bindPopup(popupFunc);
+      var apoint = L.marker(coords[i]).addTo(map); 
+      apoint.bindPopup(popupFunc(station_name[i]));
+      //OpenTopoMap.addTo(map);
+    }
+
+    for (i = 1; i < coords.length; i++){
+      var apoint = L.marker(coords[i]).addTo(map); 
+      //passing station names and coordinates to popupFunc 
+      apoint.bindPopup(popupFunc(station_name[i], coords[i]));
       OpenTopoMap.addTo(map);
     }
     return document.getElementById("demo").innerHTML = coords[1] + ' minlan and minlat';
@@ -104,5 +117,4 @@ fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2
   Aclosure()
   );
 
-
-
+  
