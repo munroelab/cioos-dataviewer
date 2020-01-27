@@ -107,7 +107,23 @@ function Aclosure() {
       apoint.bindPopup(popupFunc(station_name[i], coords[i]));
       OpenTopoMap.addTo(map);
     }
-    return document.getElementById("demo").innerHTML = coords[1] + ' minlan and minlat';
+
+
+    //retreiving data of a city only using its unique coordination
+    var stationcoord = prompt("Please enter the coordinate", coords[1][1]);
+    for (i = 1; i < data['table']["rows"].length; i++){
+      citydata =  data['table']["rows"][i];
+      if (citydata.includes(parseFloat(stationcoord))){
+        if (citydata.includes(parseFloat(stationcoord))){
+
+          //This is where the unique data is supposed to be shown!
+        alert("The station's ID is:  " + data['table']["rows"][i][0]);
+        }
+      }
+
+    }
+    
+    return document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
   };
 }
 //Fetching .json file using URL
