@@ -87,42 +87,51 @@ function Aclosure() {
   return function handleData(data) {
     var coords = [];
     var station_name=[];
-  
-    for (let i = 1; i < data['table']["rows"].length; i++){
+    
+    for ( i = 1; i < data['table']["rows"].length; i++){
         //console.log("data: ", data['table']["rows"][i] )
         coords[i] = [data['table']["rows"][i][10],data['table']["rows"][i][7]]
         //getting the name of each station
-        //console.log(len(coords[i]))
+        console.log(i)
         station_name[i]= data['table']["rows"][i][6]
-        //consol.log("station name: ", station_name[1]);
+        console.log("station name: ", station_name[i]);
+    }
     
-    //for (let i = 1; i < coords.length; i++){
-      var apoint = L.marker(coords[i]).on('click', function(e){
-      var stationCoord = this.getLatLng();
-      console.log(stationCoord);
-      var lat=stationCoord.lat  ;
-      var lang= stationCoord.lng;
-      var stationCoordArray= [lat,lang];
-      console.log(stationCoordArray);
+    for ( i = 1; i < coords.length; i++){
+      var apoint = L.marker(coords[i]).on('click', function markerClick(e){
+        var stationCoord = this.getLatLng();
+        console.log(stationCoord);
+        var lat=stationCoord.lat  ;
+        var lang= stationCoord.lng;
+        var stationCoordArray= [lat,lang];
+        console.log(stationCoordArray);
+        //calling retrieve and pass the stationCoordArray
+        //utherwise  stationCoordArray is not accesible becuz its local
+        var retrv= retrieve(stationCoordArray);
+        
       }).addTo(map); 
+
       apoint.bindPopup(popupFunc(station_name[i],coords[i]));
       OpenTopoMap.addTo(map);
+      
     }
     
     //retreiving data of a city only using its unique coordination
-    var stationcoord = prompt("Please enter the coordinate", coords[1][1]);
+    function retrieve(stationCoordArray){
+    //var stationcoord = prompt("Please enter the coordinate", coords[1][1]);
+    var stationcoord = stationCoordArray;
     for (i = 1; i < data['table']["rows"].length; i++){
       citydata =  data['table']["rows"][i];
-      if (citydata.includes(parseFloat(stationcoord))){
-        if (citydata.includes(parseFloat(stationcoord))){
+      if (citydata.includes(parseFloat(stationCoordArray[0]))){
+        if (citydata.includes(parseFloat(stationCoordArray[1]))){
 
           //This is where the unique data is supposed to be shown!
-        alert("The station's ID is:  " + data['table']["rows"][i][0]);
+        return alert("The station's ID is:  " + data['table']["rows"][i][0]);
         }
       }
 
     }
-    
+  }
     return document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
   };
 }
