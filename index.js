@@ -93,25 +93,19 @@ function Aclosure() {
         coords[i] = [data['table']["rows"][i][10],data['table']["rows"][i][7]]
         //getting the name of each station
         station_name[i]= data['table']["rows"][i][6]
-        //console.log("station name: ", station_name[1]);
+        //consol.log("station name: ", station_name[1]);
     }
     for (i = 1; i < coords.length; i++){
       var apoint = L.marker(coords[i]).on('click', function(e){
-        var stationCoord = this.getLatLng();
-        var lat=stationCoord.lat  ;
-        var lang= stationCoord.lng;
-        var stationCoordArray= [lat,lang];
-        console.log(stationCoordArray);
+      var stationCoord = this.getLatLng();
+      console.log(stationCoord);
+      var lat=stationCoord.lat  ;
+      var lang= stationCoord.lng;
+      var stationCoordArray= [lat,lang];
+      console.log(stationCoordArray);
       }).addTo(map); 
       apoint.bindPopup(popupFunc(station_name[i]));
       //OpenTopoMap.addTo(map);
-    }
-
-    for (i = 1; i < coords.length; i++){
-      var apoint = L.marker(coords[i]).addTo(map); 
-      //passing station names and coordinates to popupFunc 
-      apoint.bindPopup(popupFunc(station_name[i], coords[i]));
-      OpenTopoMap.addTo(map);
     }
 
 
