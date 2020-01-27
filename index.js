@@ -8,7 +8,7 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
-var myDataPoint = L.marker([47.575232, -52.732506]).addTo(map);
+//var myDataPoint = L.marker([47.575232, -52.732506]).addTo(map);
 
 
 function popupFunc(station_name, coordination) {
@@ -78,7 +78,7 @@ svg.append("path")
     return popupElem;
 }
 
-myDataPoint.bindPopup(popupFunc);
+//myDataPoint.bindPopup(popupFunc);
 OpenTopoMap.addTo(map);
 
 
@@ -88,14 +88,15 @@ function Aclosure() {
     var coords = [];
     var station_name=[];
   
-    for (i = 1; i < data['table']["rows"].length; i++){
+    for (let i = 1; i < data['table']["rows"].length; i++){
         //console.log("data: ", data['table']["rows"][i] )
         coords[i] = [data['table']["rows"][i][10],data['table']["rows"][i][7]]
         //getting the name of each station
+        //console.log(len(coords[i]))
         station_name[i]= data['table']["rows"][i][6]
         //consol.log("station name: ", station_name[1]);
-    }
-    for (i = 1; i < coords.length; i++){
+    
+    //for (let i = 1; i < coords.length; i++){
       var apoint = L.marker(coords[i]).on('click', function(e){
       var stationCoord = this.getLatLng();
       console.log(stationCoord);
@@ -104,11 +105,10 @@ function Aclosure() {
       var stationCoordArray= [lat,lang];
       console.log(stationCoordArray);
       }).addTo(map); 
-      apoint.bindPopup(popupFunc(station_name[i]));
-      //OpenTopoMap.addTo(map);
+      apoint.bindPopup(popupFunc(station_name[i],coords[i]));
+      OpenTopoMap.addTo(map);
     }
-
-
+    
     //retreiving data of a city only using its unique coordination
     var stationcoord = prompt("Please enter the coordinate", coords[1][1]);
     for (i = 1; i < data['table']["rows"].length; i++){
