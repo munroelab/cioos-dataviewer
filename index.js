@@ -96,7 +96,13 @@ function Aclosure() {
         //console.log("station name: ", station_name[1]);
     }
     for (i = 1; i < coords.length; i++){
-      var apoint = L.marker(coords[i]).addTo(map); 
+      var apoint = L.marker(coords[i]).on('click', function(e){
+        var stationCoord = this.getLatLng();
+        var lat=stationCoord.lat  ;
+        var lang= stationCoord.lng;
+        var stationCoordArray= [lat,lang];
+        console.log(stationCoordArray);
+      }).addTo(map); 
       apoint.bindPopup(popupFunc(station_name[i]));
       //OpenTopoMap.addTo(map);
     }
