@@ -14,17 +14,22 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 function popupFunc(station_name, coordination) {
   //console.log(station_name)
 
-    var popupElem = document.createElement("div");   
+     var popupElem = document.createElement("div");   
+    //popupElem.setAttribute("id", "Div1");
     //adding the information retrieved from data to the popup
     var node = document.createTextNode("Station name: " + station_name); 
     var node1 = document.createTextNode(" Coordinates: " + coordination);
     popupElem.appendChild(node);
     popupElem.appendChild(node1);
+    var SVGAppend= addSVG(popupElem);
+    return SVGAppend;
+}
     
+  function addSVG(popupElem){
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 20, bottom: 30, left: 40},
-    width = 220 - margin.left - margin.right,
-    height = 160- margin.top - margin.bottom;
+    width = 300 - margin.left - margin.right,
+    height = 280- margin.top - margin.bottom;
 
 // append the svg object to the body of the page
     svg = d3.select(popupElem)
@@ -34,7 +39,6 @@ function popupFunc(station_name, coordination) {
     .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
-
 
 //Read the data
 d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
@@ -72,15 +76,13 @@ svg.append("path")
     .x(function(d) { return x(d.date) })
     .y(function(d) { return y(d.value) })
     )
-
+   
 })
-    
-    return popupElem;
-}
-
-//myDataPoint.bindPopup(popupFunc);
-OpenTopoMap.addTo(map);
-
+  
+return popupElem;
+  }
+ 
+  //myDataPoint.bindPopup(  popupFunc);
 
 //Defining a function to handle data
 function Aclosure() {
@@ -95,9 +97,9 @@ function Aclosure() {
         console.log(i)
         station_name[i]= data['table']["rows"][i][6]
         console.log("station name: ", station_name[i]);
-    }
     
-    for ( i = 1; i < coords.length; i++){
+    
+    //for ( j = 1; i < coords.length; i++){
       var apoint = L.marker(coords[i]).on('click', function markerClick(e){
         var stationCoord = this.getLatLng();
         console.log(stationCoord);
@@ -107,32 +109,32 @@ function Aclosure() {
         console.log(stationCoordArray);
         //calling retrieve and pass the stationCoordArray
         //utherwise  stationCoordArray is not accesible becuz its local
-        var retrv= retrieve(stationCoordArray);
+        var retrv= retrieveStationData(stationCoordArray);
         
       }).addTo(map); 
 
       apoint.bindPopup(popupFunc(station_name[i],coords[i]));
-      OpenTopoMap.addTo(map);
+      OpenTopoMap.addTo(map);     
       
     }
-    
+  
     //retreiving data of a city only using its unique coordination
-    function retrieve(stationCoordArray){
+    function retrieveStationData(stationCoordArray){
     //var stationcoord = prompt("Please enter the coordinate", coords[1][1]);
     var stationcoord = stationCoordArray;
     for (i = 1; i < data['table']["rows"].length; i++){
-      citydata =  data['table']["rows"][i];
-      if (citydata.includes(parseFloat(stationCoordArray[0]))){
-        if (citydata.includes(parseFloat(stationCoordArray[1]))){
+      stationData =  data['table']["rows"][i];
+      if (stationData.includes(parseFloat(stationCoordArray[0]))){
+        if (stationData.includes(parseFloat(stationCoordArray[1]))){
 
           //This is where the unique data is supposed to be shown!
-        return alert("The station's ID is:  " + data['table']["rows"][i][0]);
+       // return alert("The station's ID is:  " + data['table']["rows"][i][0]);
         }
       }
 
     }
   }
-    return document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
+   // return document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
   };
 }
 //Fetching .json file using URL
