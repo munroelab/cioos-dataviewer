@@ -40,6 +40,7 @@ function createSVG(popupSVGElem){
 //Read the data
 
 d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+//d3.csv("https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z",
 
 // When reading the csv, I must format variables:
     function(d){
@@ -128,3 +129,9 @@ fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2
   );
 
   
+//building data url
+function dataurl(datatype, stationname, query){
+var theurl = "https://www.smartatlantic.ca/erddap/tabledap/" + 
+stationname + "." + datatype+ "?" + query
+return theurl
+}
