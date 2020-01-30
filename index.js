@@ -117,7 +117,7 @@ function handleData(data) {
       .bindPopup(popupFunc(station_name,coords))
       .addTo(map);      
   });
-  document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
+ // document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
     
 };
 
