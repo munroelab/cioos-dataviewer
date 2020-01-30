@@ -39,12 +39,14 @@ function createSVG(popupSVGElem){
   //return svg.node();
 //Read the data
 
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+//d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
 //d3.csv("https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z",
-
+d3.csv("SMA_st_johns_8385_18d8_0a6d (2).csv",
 // When reading the csv, I must format variables:
     function(d){
-    return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+    return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.date), value : d.value }
+    //return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+
     },
 
     // Now I can use this dataset:
@@ -74,6 +76,7 @@ d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_data
     .attr("d", d3.line()
       .x(function(d) { return x(d.date) })
       .y(function(d) { return y(d.value) })
+      .defined(function(d) { return !isNaN(d.value); })
       )
       
     })
