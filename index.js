@@ -23,7 +23,7 @@ function popupFunc(station_name, coordination) {
 
 function createSVG(popupSVGElem){
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 20, bottom: 30, left: 40},
+    var margin = {top: 30, right: 20, bottom: 30, left: 40},
     width = 300 - margin.left - margin.right,
     height = 280- margin.top - margin.bottom;
 
@@ -110,6 +110,7 @@ function markerClick(e){
 
 //Function to handle data
 function handleData(data) {
+  console.log(data);
   data['table']["rows"].slice(1).forEach(row=>{
     let coords = [row[10],row[7]]
     let station_name= row[6]
