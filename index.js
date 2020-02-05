@@ -9,23 +9,24 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 });
 OpenTopoMap.addTo(map);   
 
-function popupFunc(station_name, coordination) {
+function popupFunc(row) {
     var popupElem = document.createElement("div");   
     var popupSVGElem= document.createElement("div");   
-    var node = document.createTextNode("Station name: " + station_name); 
-    var node1 = document.createTextNode(" Coordinates: " + coordination);
-    var svgNode = createSVG(popupSVGElem);
+    var node = document.createTextNode("Station name: " + row['title']); 
+    var node1 = document.createTextNode("dataset_id: " + row['datasetID']);
+    var svgNode = createSVG(popupSVGElem, row);
     popupElem.appendChild(node);
     popupElem.appendChild(node1);
     popupElem.appendChild(svgNode);
     return popupElem;
 }
 
-function createSVG(popupSVGElem){
+function createSVG(popupSVGElem, row){
     // set the dimensions and margins of the graph
     var margin = {top: 30, right: 20, bottom: 30, left: 40},
     width = 300 - margin.left - margin.right,
     height = 280- margin.top - margin.bottom;
+    console.log(row);
 
 // append the svg object to the body of the page
     var svg =d3.select(popupSVGElem)
@@ -37,16 +38,17 @@ function createSVG(popupSVGElem){
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
   //return svg.node();
-//Read the data
+  
+  //Read the data
 
-//d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
-//d3.csv("https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z",
-d3.csv("SMA_st_johns_8385_18d8_0a6d (2).csv",
-// When reading the csv, I must format variables:
+  let url = dataurl('csv', 
+                    row['datasetID'], 
+                    'time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z')
+
+  d3.csv(url,
+    // When reading the csv, I must format variables:
     function(d){
-    return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.date), value : d.value }
-    //return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-
+    return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.time), value : d.wind_spd_avg }
     },
 
     // Now I can use this dataset:
@@ -114,11 +116,10 @@ function markerClick(e){
 //Function to handle data
 function handleData(data) {
   console.log(data);
-  data['table']["rows"].slice(1).forEach(row=>{
-    let coords = [row[10],row[7]]
-    let station_name= row[6]
+  data.forEach(row=>{
+    coords = [row['minLatitude'], row['minLongitude']]
     L.marker(coords)
-      .bindPopup(popupFunc(station_name,coords))
+      .bindPopup(popupFunc(row))
       .addTo(map);      
   });
  // document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
@@ -128,6 +129,17 @@ function handleData(data) {
 //Fetching .json file using URL
 fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary")
 .then(response => {return response.json()})
+.then(data => {
+  columnNames = data['table']['columnNames']
+  dict = [];
+  data['table']["rows"].slice(1).forEach(rows=>{
+    var pairs = {};
+    columnNames.forEach((columnName, i) => pairs[columnName]= rows[i]);
+
+    dict.push(pairs)
+  })
+  return dict;
+  })
 .then(  
   data=> handleData(data)
   );
@@ -135,7 +147,10 @@ fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2
   
 //building data url
 function dataurl(datatype, stationname, query){
-var theurl = "https://www.smartatlantic.ca/erddap/tabledap/" + 
-stationname + "." + datatype+ "?" + query
-return theurl
+
+  // "https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z"
+
+  var theurl = "https://www.smartatlantic.ca/erddap/tabledap/" + 
+  stationname + "." + datatype+ "?" + query
+  return theurl
 }
