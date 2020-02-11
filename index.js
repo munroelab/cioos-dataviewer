@@ -136,10 +136,10 @@ function handleData(data) {
   console.log(data);
   data.forEach(row=>{
     coords = [row['minLatitude'], row['minLongitude']]
-    var marker =L.marker(coords);
+    L.marker(coords)
       //.bindPopup(popupFunc(row))
-      marker.addTo(map);     
-      marker.on('click',function(e){
+      .addTo(map)  
+      .on('click',function(e){
         var popup=e.target.bindPopup(popupFunc(row))
       });
 
