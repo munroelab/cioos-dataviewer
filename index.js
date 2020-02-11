@@ -3,17 +3,20 @@ var map = L.map('map', {
     zoom: 4
 });
 
+
 var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
+
+
 OpenTopoMap.addTo(map);   
 
 function popupFunc(row) {
     var popupElem = document.createElement("div");   
     var popupSVGElem= document.createElement("div");   
     var node = document.createTextNode("Station name: " + row['title']); 
-    var node1 = document.createTextNode("dataset_id: " + row['datasetID']);
+    var node1 = document.createTextNode(" dataset_id: " + row['datasetID']);
     var svgNode = createSVG(popupSVGElem, row);
     popupElem.appendChild(node);
     popupElem.appendChild(node1);
@@ -44,16 +47,16 @@ function createSVG(popupSVGElem, row){
   let url = dataurl('csv', 
                     row['datasetID'], 
                     'time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z')
-
-  d3.csv(url,
+ 
+    d3.csv(url,
     // When reading the csv, I must format variables:
     function(d){
     return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.time), value : d.wind_spd_avg }
+    
     },
 
     // Now I can use this dataset:
     function(data) {
-
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
     .domain(d3.extent(data, function(d) { return d.date; }))
@@ -68,6 +71,22 @@ function createSVG(popupSVGElem, row){
     .range([ height, 0 ]);
     svg.append("g")
     .call(d3.axisLeft(y));
+
+    // adding Labels to axises
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", 250 )
+    .text("time");
+
+    svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -34)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Average wind speed ");
 
     // Add the line
     svg.append("path")
@@ -110,7 +129,6 @@ function markerClick(e){
     var stationCoordArray= [lat,lang];
     console.log(stationCoordArray);
     //var retrv= retrieveStationData(stationCoordArray);
-    
 } 
 
 //Function to handle data
@@ -118,13 +136,17 @@ function handleData(data) {
   console.log(data);
   data.forEach(row=>{
     coords = [row['minLatitude'], row['minLongitude']]
-    L.marker(coords)
-      .bindPopup(popupFunc(row))
-      .addTo(map);      
+    var marker =L.marker(coords);
+      //.bindPopup(popupFunc(row))
+      marker.addTo(map);     
+      marker.on('click',function(e){
+        var popup=e.target.bindPopup(popupFunc(row))
+      });
+
   });
- // document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';
-    
+ // document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';   
 };
+
 
 //Fetching .json file using URL
 fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary")

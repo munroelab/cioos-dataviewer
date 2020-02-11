@@ -3,17 +3,20 @@ body {
     margin: 0;
 }
 
+
 html,
 body,
 #map {
     height: 100%;
     width: 100%;
 }
+
+
 /* Style the header with a grey background and some padding */
 .header {
     overflow: hidden;
     background-color: powderblue;
-    padding: 20px 10px;
+    padding: 10px 10px;
   }
   
   /* Style the header links */
@@ -63,3 +66,4 @@ body,
       float: none;
     }
   }
+  
