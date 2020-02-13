@@ -46,12 +46,12 @@ function createSVG(popupSVGElem, row){
 
   let url = dataurl('csv', 
                     row['datasetID'], 
-                    'time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z')
+                    'time%2Csurface_temp_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z')
  
     d3.csv(url,
     // When reading the csv, I must format variables:
     function(d){
-    return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.time), value : d.wind_spd_avg }
+    return { date : d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.time), value : d.surface_temp_avg }
     
     },
 
@@ -86,7 +86,7 @@ function createSVG(popupSVGElem, row){
     .attr("y", -34)
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
-    .text("Average wind speed ");
+    .text("surface-temp-avg");
 
     // Add the line
     svg.append("path")
@@ -131,6 +131,17 @@ function markerClick(e){
     //var retrv= retrieveStationData(stationCoordArray);
 } 
 
+function makeOnClick(row){
+ 
+  return function(e){
+    var coords=e.target.getLatLng();
+    var popup = L.popup()
+    .setLatLng(coords)
+    .setContent(popupFunc(row))
+    .openOn(map);
+  }
+
+}
 //Function to handle data
 function handleData(data) {
   console.log(data);
@@ -139,9 +150,10 @@ function handleData(data) {
     L.marker(coords)
       //.bindPopup(popupFunc(row))
       .addTo(map)  
-      .on('click',function(e){
-        var popup=e.target.bindPopup(popupFunc(row))
-      });
+      .on('click',makeOnClick(row));
+       
+       // var popup=e.target.bindPopup(popupFunc(row))
+     
 
   });
  // document.getElementById("demo").innerHTML = data['table']["columnNames"].indexOf("minLongitude",0) + ' minlan and minlat';   
