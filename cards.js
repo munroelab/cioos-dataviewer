@@ -1,7 +1,7 @@
 fetch("https://cioosatlantic.ca/ckan/api/3/action/package_list", { mode: 'no-cors' })
 .then(response => {return response})
 .then(data => {return console.log(data)});
-
+//https://cioosatlantic.ca/ckan/api/3/action/package_show?id=sma_st_johns
 const app = document.getElementById('root');
 
 const logo = document.createElement('img');
