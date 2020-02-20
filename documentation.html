@@ -1,11 +1,38 @@
 <!DOCTYPE html> 
 <html>
     <head>
-      <h1>CIOOS data viewer documentation</h1>  
-      
-      <link rel="stylesheet" type="text/css" href="vignette.css">
+  
+      <link rel="stylesheet" type="text/css" href="documentation.css">
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css"
+      />
+            
     </head>
     <body>
+      <article class="webcontainer">
+      <nav class="nav scroll">
+        <div class="nav_container">
+        <div></div>
+        <div></div>
+        <div></div>
+        </div>
+      </div>
+      </nav>
+      <main id="main-content" >
+        <article class="single container">
+          <div class="post">
+            <h1>CIOOS data viewer documentation</h1>  
+      
+            <div class="post-meta">
+              <time class="date">February, 2020</time>
+            </div>
+            <p>
+              In this tutorial we show how to use HTML, CSS and Javascript to
+              make an interactive map that retrieves data from an API and do some
+              visualization. We show you step by step how to make an interactive
+              website as <a href="index.html"> CIOOS data viewer </a>.
+            </p>
       <h3>Prerequisites</h3>
       <p>
       <ul>
@@ -14,9 +41,80 @@
     </ul>
       <h3>The data viewer will look like this </h3>
       </p>
-     
-        <img src="screenshot.png" width="50%" height="50%" >
-      
-      
+
+         
+        <img src="screenshot.png" width="100%" height="100%" class="image">
+        <p>
+          <h3>Creating the map using Leaflet</h3>
+          We use <a href="https://leafletjs.com/">Leaflet</a> which is an open source Javascript library for making interactive
+          maps. We only need to create three files: <strong>index.html, style.css</strong> and <strong>script.js</strong>. 
+
+          <h5>Setting up</h5>
+          
+          <p>In order to have a map as below we need to create our initial files 
+            as shown in the following.</p> 
+         
+          <img src="./pics/initialmap.png" width="100%" height="100%" style=" ce">
+
+<div class="filename">index.html</div>
+<pre><code class="language-html">
+&lt;!Doctype html&gt; <br>
+&lt;html&gt; <br>
+&lt;head&gt; <br>
+<br>
+&lt;meta charset="utf-8"&gt;  
+&lt;title&gt; &lt;CIOOS Atlantic Dataviewer&gt; &lt;/title&gt;<br>
+&lt;!-- Include Leaflet CSS file in the head section of your document --&gt; <br>
+&lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"&gt; <br>
+&lt;!-- link the local css file --&gt; <br>
+&lt;link rel="stylesheet" type="text/css" href="style.css"&gt; <br>
+&lt;!-- Include Leaflet JavaScript file after Leaflet’s CSS --&gt; <br>
+&lt;script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"&gt; &lt;/script&gt; <br>
+<br>
+&lt;/head&gt;<br>
+</br>
+&lt;body&gt;<br>
+<br>
+&lt;!-- Put a div element with a certain id where you want your map to be --&gt; <br>
+&lt;div id="map" &gt; &lt;/div &gt;<br>
+&lt;!-- link the local Javascript file --&gt;<br>
+&lt;script src="script.js"&gt;&lt;/script&gt;<br>
+&lt;/body&gt;<br>
+<br>
+&lt;/html&gt;
+        </code>
+         </pre>
+
+<div class="filename">style.css</div>
+<div class="codecontainer">
+<pre><code class="language-css">
+html, 
+body, 
+#map { 
+      height: 100%;  
+      width: 100%;  
+}  
+</code></pre>
+</div>
+  
+<div class="filename">script.js</div>
+<pre><code class="language-javascript">
+var map = L.map('map', {
+center: [47.570608, -54.720862],
+zoom: 4
+});
+
+var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+maxZoom: 17,
+attribution: 'Map data: &copy;<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> \
+contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; \
+<a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+
+OpenTopoMap.addTo(map);   
+
+      </code></pre>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+    </article>
     </body>
 </html>

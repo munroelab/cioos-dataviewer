@@ -1,3 +1,92 @@
-body{
-    text-align: left;
+ 
+body {
+    font-size: 1.15rem;
+    justify-content: center;
+    
 }
+#main-content {
+    margin-top: 10px;
+    padding: 60px 0 0;
+    min-height: calc(100vh - 219px);
+    justify-content: center;
+}
+
+html {
+    font: normal normal normal 1rem/1.6 BlinkMacSystemFont,-apple-system,Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 1rem;
+    font-family: BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: BlinkMacSystemFont,-apple-system,Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 84% !important;
+}
+
+
+
+*, ::after, ::before, html {
+    box-sizing: border-box;
+}
+
+pre, code {
+    font-family: monospace, monospace;
+  }
+  pre {
+    overflow: auto;
+  }
+  pre > code {
+    display: block;
+    padding: 0.5rem;
+    word-wrap: normal;
+  }
+
+  code {
+    font-family: Menlo,Roboto Mono,Courier New,monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+    white-space: pre-wrap;
+    word-spacing: normal;
+    word-break: normal;
+    line-height: 1.7;
+    font-weight: 400;
+    -moz-tab-size: 2;
+    hyphens: none;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    overflow: auto;
+    background-color: #ddd;
+    border: 0;
+    box-shadow: 2px 4px 25px
+    rgba(0,0,0,.15);
+}
+
+.codecontainer{
+    height: auto;
+    width: auto;
+    background-color: black;
+}
+
+
+.filename {
+
+    background-color:#494a4b;
+    color: #fff;
+    padding: .5rem 1rem .75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+
+    
+}
+
+.webcontainer{
+   
+        max-width: 850px;
+        padding: 0 1.5rem;
+        margin-left: auto;
+        margin-right: auto;
+    
+}
+
