@@ -26,9 +26,10 @@ request.onload = function () {
   var data = JSON.parse(this.response);
   if (request.status >= 200 && request.status < 400) {
     data.result.forEach(station => {
-            fetch("./"+station)
+            fetch("./"+"sma_saint_john_wharf")
             .then(resp => resp.json())
-            .then(dt => JSON.parse(dt));
+            .then(dt => JSON.parse(JSON.stringify(dt)))
+            .then(dat => console.log(dat.help));
             //console.log()
 
             const card = document.createElement('div');
