@@ -1,6 +1,11 @@
-fetch("https://cioosatlantic.ca/ckan/api/3/action/package_list", { mode: 'no-cors' })
-.then(response => {return response})
-.then(data => {return console.log(data)});
+
+
+//var ckanapi = "https://cioosatlantic.ca/ckan/api/3/action/"
+//var query = ckanapi + "package_list"
+var query = "./package_list.json"
+fetch(query)
+.then(res => {return res.json})
+.then(da => {return console.log(da.help)});
 //https://cioosatlantic.ca/ckan/api/3/action/package_show?id=sma_st_johns
 const app = document.getElementById('root');
 
@@ -14,26 +19,31 @@ app.appendChild(logo);
 app.appendChild(container);
 
 var request = new XMLHttpRequest();
-request.open('GET', 'https://ghibliapi.herokuapp.com/films', true);
+request.open('GET', 'package_list.json', true);
 request.onload = function () {
 
   // Begin accessing JSON data here
   var data = JSON.parse(this.response);
   if (request.status >= 200 && request.status < 400) {
-    data.forEach(movie => {
-      const card = document.createElement('div');
-      card.setAttribute('class', 'card');
+    data.result.forEach(station => {
+            fetch("./"+station)
+            .then(resp => resp.json())
+            .then(dt => JSON.parse(dt));
+            //console.log()
 
-      const h1 = document.createElement('h1');
-      h1.textContent = movie.title;
+            const card = document.createElement('div');
+            card.setAttribute('class', 'card');
 
-      const p = document.createElement('p');
-      movie.description = movie.description.substring(0, 300);
-      p.textContent = `${movie.description}...`;
+            const h1 = document.createElement('h1');
+            h1.textContent = station;
 
-      container.appendChild(card);
-      card.appendChild(h1);
-      card.appendChild(p);
+            const p = document.createElement('p');
+            station.description = station.substring(0, 3);
+            p.textContent = `${"Information about this station will appear here!"}...`;
+
+            container.appendChild(card);
+            card.appendChild(h1);
+            card.appendChild(p);
     });
   } else {
     const errorMessage = document.createElement('marquee');
