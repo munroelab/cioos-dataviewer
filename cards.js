@@ -36,7 +36,8 @@ request.onload = function () {
             card.setAttribute('class', 'card');
 
             const h1 = document.createElement('h1');
-            h1.textContent = "Station Name:\n" + station;
+            // h1.textContent = "Station Name:\n" + station;
+            h1.innerHTML = `Station Name:<br/><a href=/view_card.html?name=${station}>${station}</a>`
 
             const p = document.createElement('p');
             p.textContent = `${dat.result.notes_translated.en.substring(0, 300)}...`;
