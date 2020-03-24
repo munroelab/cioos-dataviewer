@@ -50,13 +50,13 @@ document.getElementById('theme-selector').addEventListener('change', function (e
   });
   OpenTopoMap.addTo(map);
 });
-
+// Popup getting station data
 function popupFunc(row) {
   var popupElem = document.createElement("div");
   var popupSVGElem = document.createElement("div");
   var node = document.createTextNode("Station name: " + row['title']);
   var node1 = document.createTextNode(" dataset_id: " + row['datasetID']);
-  var svgNode = createSVG(popupSVGElem, row);
+  var svgNode = createSVG(popupSVGElem, row);//** Somthing else when there is no data Raise exp, return undefined */
   popupElem.appendChild(node);
   popupElem.appendChild(node1);
   popupElem.appendChild(svgNode);
@@ -90,7 +90,7 @@ function createSVG(popupSVGElem, row) {
 
   let url = dataurl('csv',
     row['datasetID'],
-    'time%2Csurface_temp_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z')
+    'time%2Csurface_temp_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z') //* dynamic coding (return what variables are there)
 
   d3.csv(url,
     // When reading the csv, I must format variables:
@@ -105,7 +105,7 @@ function createSVG(popupSVGElem, row) {
     function (error, data) {
       if (error) {
         // Handle error
-        console.group('CSV Errors');
+        console.group('CSV Errors');//******************* */
         console.error(error);
         console.groupEnd();
         return;
