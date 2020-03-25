@@ -1,63 +1,64 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>
-  
-      <link rel="stylesheet" type="text/css" href="documentation.css">
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css"
-      />
-            
-    </head>
-    <body>
-      <article class="webcontainer">
-      <nav class="nav scroll">
-        <div class="nav_container">
+
+<head>
+
+  <link rel="stylesheet" type="text/css" href="documentation.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" />
+
+</head>
+
+<body>
+  <article class="webcontainer">
+    <nav class="nav scroll">
+      <div class="nav_container">
         <div></div>
         <div></div>
         <div></div>
-        </div>
       </div>
-      </nav>
-      <main id="main-content" >
-        <article class="single container">
-          <div class="post">
-            <h1>CIOOS data viewer documentation</h1>  
-      
-            <div class="post-meta">
-              <time class="date">February, 2020</time>
-            </div>
-            <p>
-              In this tutorial we show how to use HTML, CSS and Javascript to
-              make an interactive map that retrieves data from an API and do some
-              visualization. We show you step by step how to make an interactive
-              website as <a href="index.html"> CIOOS data viewer </a>.
-            </p>
-      <h3>Prerequisites</h3>
-      <p>
-      <ul>
-        <li>knowledge of HTML, CSS and Javascript</li> 
-        <li>Basic knowledge of JASON and Javascript objects</li>
-    </ul>
-      <h3>The data viewer will look like this </h3>
-      </p>
+      </div>
+    </nav>
+    <main id="main-content">
+      <article class="single container">
+        <div class="post">
+          <h1>CIOOS data viewer documentation</h1>
 
-         
-        <img src="screenshot.png" width="100%" height="100%" class="image">
-        <p>
-          <h3>Creating the map using Leaflet</h3>
-          We use <a href="https://leafletjs.com/">Leaflet</a> which is an open source Javascript library for making interactive
-          maps. We only need to create three files: <strong>index.html, style.css</strong> and <strong>script.js</strong>. 
+          <div class="post-meta">
+            <time class="date">February, 2020</time>
+          </div>
+          <p>
+            In this tutorial we show how to use HTML, CSS and Javascript to
+            make an interactive map that retrieves data from an API and do some
+            visualization. We show you step by step how to make an interactive
+            website as <a href="index.html"> CIOOS data viewer </a>.
+          </p>
+          <h3>Prerequisites</h3>
+          <p>
+            <ul>
+              <li>knowledge of HTML, CSS and Javascript</li>
+              <li>Basic knowledge of JASON and Javascript objects</li>
+            </ul>
+            <h3>The data viewer will look like this </h3>
+          </p>
 
-          <h5>Setting up</h5>
-          
-          <p>In order to have a map as below we need to create our initial files 
-            as shown in the following.</p> 
-         
-          <img src="./pics/initialmap.png" width="100%" height="100%" style=" ce">
 
-<div class="filename">index.html</div>
-<pre><code class="language-html">
+          <img src="screenshot.png" width="100%" height="100%" class="image">
+          <p>
+            <h3>Creating the map using Leaflet</h3>
+            We use <a href="https://leafletjs.com/">Leaflet</a> which is an open source Javascript library for making
+            interactive
+            maps. We only need to create three files: <strong>index.html, style.css</strong> and
+            <strong>script.js</strong>.
+
+            <h5>Setting up</h5>
+
+            <p>In order to have a map as below we need to create our initial files
+              as shown in the following.</p>
+
+            <img src="./pics/initialmap.png" width="100%" height="100%" style=" ce">
+
+            <div class="filename">index.html</div>
+            <pre><code class="language-html">
 &lt;!Doctype html&gt; <br>
 &lt;html&gt; <br>
 &lt;head&gt; <br>
@@ -85,9 +86,9 @@
         </code>
          </pre>
 
-<div class="filename">style.css</div>
-<div class="codecontainer">
-<pre><code class="language-css">
+            <div class="filename">style.css</div>
+            <div class="codecontainer">
+              <pre><code class="language-css">
 html, 
 body, 
 #map { 
@@ -95,10 +96,10 @@ body,
       width: 100%;  
 }  
 </code></pre>
-</div>
-  
-<div class="filename">script.js</div>
-<pre><code class="language-javascript">
+            </div>
+
+            <div class="filename">script.js</div>
+            <pre><code class="language-javascript">
 var map = L.map('map', {
 center: [47.570608, -54.720862],
 zoom: 4
@@ -114,13 +115,92 @@ contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &co
 OpenTopoMap.addTo(map);   
 
       </code></pre>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
-    </article>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+      </article>
 
 
 
-The next step would be retreiving data files so that we can pin the locations that are present in the data file.
-For this reason we can retreiving a .JSON file from ERDDAP server that gives us a file for meta data. The anatomy of this query is explained in 
-<a href="https://www.smartatlantic.ca/erddap/tabledap/documentation.html"> ERDDAP table documentation.</a> The data will be retreived as follow:
-    </body>
+      The next step would be retreiving data files so that we can pin the locations that are present in the data file.
+      For this reason we can retreiving a .JSON file from ERDDAP server that gives us a file for meta data. The anatomy
+      of this query is explained in
+      <a href="https://www.smartatlantic.ca/erddap/tabledap/documentation.html"> ERDDAP table documentation.</a> The
+      data will be retreived as follow:
+</body>
+
 </html>
+
+
+<div class="filename">index.js</div>
+<pre><code class="language-javascript">
+function dataurl(datatype, stationname, query) { 
+  // &quot;https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&amp;time%3E=2018-11-21&amp;time%3C=2020-01-29T22%3A00%3A01Z&quot;
+  var theurl = &quot;https://www.smartatlantic.ca/erddap/tabledap/&quot; + stationname + &quot;.&quot; + datatype + &quot;?&quot; + query 
+  // return encodeURI(theurl); 
+  return theurl; 
+}
+</code></pre>
+</div>
+If you take a closer look at the anatomy of the url being made, it is a composition of different parts. THe first "csv"
+declares the format of fetched file.
+Other formats like JSON can be exported if needed. The second part is station name. Station names can be accessed
+through <a href="https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID"> List of Stations</a>.
+However, to have a general data and to see all information that ERDDAP holds, we can asl for a table containing
+specially coordinates and station names, in order to put the markers on the map.
+This part of work was a tad challenging, as we found out that data neeeds to be formatted in order to be treated as an
+actual JSON file. The raw exported file looks like this:
+<img src="./pics/rawJASONfile.jpg" width="100%" height="100%" class="image">
+As it may be noticed, the main part that we need to deal with is the array objects under "row" key. However, the array
+under "row" is exactly the section that needs to be treated like an actual json file. So before using the raw data file,
+we reformat it into a proper json file:
+
+<div class="filename">index.js</div>
+<pre><code class="language-javascript">
+  fetch(&quot;https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary&quot;) .then(response =&gt; { return response.json() }) .then(data =&gt; { columnNames = data['table']['columnNames'] dict = [];
+  data['table'][&quot;rows&quot;].slice(1).forEach(rows =&gt; { var pairs = {}; 
+  columnNames.forEach((columnName, i) =&gt; pairs[columnName] = rows[i]);
+  dict.push(pairs) }) 
+  return dict; })
+
+</code></pre>
+</div>
+
+After this, data is ready to be easily handled in order to add markers to the map using their coordinates. For this
+purpose, the Fetch file's query is passed to the next .then() statement that calls handledata() funtion. This function
+uses leaflet's "marker" function and uses coordinates along with station name to add each marker to the proper position
+within the map.
+
+<div class="filename">index.js</div>
+<pre><code class="language-javascript">
+function handleData(data) 
+{ console.log(data); 
+  data.forEach(row =&gt; { coords = [row['minLatitude'], row['minLongitude']]
+  L.marker(coords)
+  .addTo(map) 
+  .on('click', makeOnClick(row));
+   }); 
+ };
+</code></pre>
+</div>
+The function above gets the coordinates of each station and adds a marker to the map at that very position. It also adds
+an event listener on each marker for making them "clickable". This happens via makeOnClick() function.
+<div class="filename">index.js</div>
+<pre><code class="language-javascript">
+function makeOnClick(row) { return 
+  function (e) { var coords = e.target.getLatLng();
+  var popup = L.popup()
+  .setLatLng(coords)
+  .setContent(popupFunc(row))
+  .openOn(map); } }
+</code></pre>
+</div>
+This function adds a popup element to each of the exisiting coordinates, on top of the each marker. Then user can pass
+some content into popup element, which has been done here via popupFunc() and passing its content to setContent()
+method. popupFunc() gets the information of each station, and uses that to creat some content as follow:
+<div class="filename">index.js</div>
+<pre><code class="language-javascript">
+function popupFunc(row) { var popupElem = document.createElement(&quot;div&quot;); var popupSVGElem = document.createElement(&quot;div&quot;); var node = document.createTextNode(&quot;Station name: &quot; + row['title']);
+var node1 = document.createTextNode(&quot; dataset_id: &quot; + row['datasetID']); var svgNode = createSVG(popupSVGElem, row);//** Somthing else when there is no data Raise exp, return undefined */ popupElem.appendChild(node); 
+popupElem.appendChild(node1); 
+popupElem.appendChild(svgNode); return popupElem; }
+</code></pre>
+</div>

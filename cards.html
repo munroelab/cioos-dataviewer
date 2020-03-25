@@ -6,14 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Metadata viewer</title>
-  
+
   <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+  <script src="https://unpkg.com/linqify@1.2.1"></script>
+  
   <link href="cards.css" rel="stylesheet">
+  <script>
+    function onCardClose() {
+      let card = document.getElementById('extended-card');
+      card.style.display = 'none';
+      console.log('Triggered');
+    }
+  </script>
 
 </head>
 
 <body>
 
+  <div id='extended-card'
+    style="position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.1); display: none; z-index: 10;" onclick="onCardClose()">
+    <div style="display: flex; width: 100%; height: 100%; justify-content: center; align-items: center;">
+      <div style="box-shadow: 0 0 5px solid gray; width: 90%; height: 90%; background-color: rgba(243, 243, 243, 0.95); border-radius: 10px; padding: 10px">
+        <div id="content" style="width: 100%; height: 100%"></div>
+        <!-- <button onclick="onCardClose()">
+          Close
+        </button> -->
+      </div>
+    </div>
+  </div>
   <div id="root"></div>
 
   <script src="cards.js"></script>

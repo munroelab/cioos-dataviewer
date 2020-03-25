@@ -249,8 +249,9 @@ function dataurl(datatype, stationname, query) {
 
   // "https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z"
 
-  var theurl = "https://www.smartatlantic.ca/erddap/tabledap/" +
-    stationname + "." + datatype + "?" + query
+  // var theurl = "https://www.smartatlantic.ca/erddap/tabledap/" +
+  //   stationname + "." + datatype + "?" + query
   // return encodeURI(theurl);
+  let theurl = `https://www.smartatlantic.ca/erddap/tabledap/${stationname}.${datatype}?${query}`
   return theurl;
 }
