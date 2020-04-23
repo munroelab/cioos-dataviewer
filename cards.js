@@ -41,24 +41,24 @@ request.onload = function () {
         .then(dt => JSON.parse(JSON.stringify(dt)))
         .then(dat => {
           const card = document.createElement('div');
-          card.setAttribute('class', 'card');
+          card.setAttribute('class', 'card'); //taking stuff from .card class in css
 
           const h1 = document.createElement('h1');
           h1.ondblclick = () => {
             let extended_card = document.getElementById('extended-card');
-            extended_card.style.display = 'block';
+            extended_card.style.display = 'block';//
             let extended_card_content = document.querySelector('#content');
             
             extended_card_content.innerHTML = '';
-            let canvas = document.createElement('canvas');
+            let canvas = document.createElement('canvas'); //html element 
             extended_card_content.appendChild(canvas);
 
             let url = getDataURL(stationId)
-            const abortHandler = new AbortController();
-            const timeout = setTimeout(abortHandler.abort, 5000);
+            const abortHandler = new AbortController(); // for timeout of requests
+            const timeout = setTimeout(() => abortHandler.abort(), 5000);
             
             fetch(url, {signal: abortHandler.signal})
-              .then(async (response) => {
+              .then((response) => {
                 if (response.status !== 200) {
                   throw new Error('No Content Found')
                 }
@@ -148,15 +148,17 @@ function parseCsv(csvData) {
   return data;
 }
 
+/**
+ * Parse dataset to be shown by months and the average wind_spd of that month
+ * @param dataset dataset with properties {time: Moment, wind_spd_avg: number}
+ */
 function formatDataset(dataset) {
-  dataset.Max(d => d.wind_spd_avg)
-  dataset.Min(d => d.wind_spd_avg)
   return dataset
     .GroupBy(d => d.time.format('MM/YYYY'))
     .Distinct() // for enforcing unique values
     .Select(grp => ({
       month: grp.Key,
-      values: grp.Sum(d => d.wind_spd_avg)
+      values: grp.Sum(d => d.wind_spd_avg) / grp.Select(grp => grp.time).Count()
     }))
     .ToArray();
 }
