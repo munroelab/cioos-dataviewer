@@ -47,7 +47,8 @@ request.onload = function () {
           h1.ondblclick = () => {
             let extended_card = document.getElementById('extended-card');
             extended_card.style.display = 'block';//
-            let extended_card_content = document.querySelector('#content');
+            // let extended_card_content = document.querySelector('#content');
+            let extended_card_content = document.getElementById('content');
             
             extended_card_content.innerHTML = '';
             let canvas = document.createElement('canvas'); //html element 

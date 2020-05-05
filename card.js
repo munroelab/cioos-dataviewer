@@ -4,7 +4,7 @@
 const rootURL = 'https://cioosatlantic.ca/ckan/api/3/action/package_show?id='
 class Card extends HTMLElement {
   constructor() {
-    super();
+    super(); // HTML elements constructer
     let params = new URLSearchParams(window.location.search)
     if (params.get('name')) {
       fetch(`${rootURL}${params.get('name')}`)
@@ -17,7 +17,7 @@ class Card extends HTMLElement {
         .then(data => {
           // Do something with the data
           this.data = data;
-          this.init();
+          this.init(); //method @ line 31
           // document.body.textContent = data['result']['notes_translated']['en'];
           // document.body.textContent = JSON.stringify(data, null, 2);
           console.log(data);
