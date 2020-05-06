@@ -41,7 +41,7 @@ var markers = {
 }
 
 // Event listener to listen to change in theme selection
-document.getElementById('theme-selector').addEventListener('change', function(ev) {
+document.getElementById('theme-selector').addEventListener('change', function (ev) {
     let theme = themes[ev.currentTarget.value];
     const {
         url,
@@ -57,14 +57,23 @@ document.getElementById('theme-selector').addEventListener('change', function(ev
 });
 // Popup getting station data
 function popupFunc(row) {
-    var popupElem = document.createElement("div");
-    var popupSVGElem = document.createElement("div");
-    var node = document.createTextNode("Station name: " + row['title']);
-    var node1 = document.createTextNode(" dataset_id: " + row['datasetID']);
-    var svgNode = createSVG(popupSVGElem, row); //** Somthing else when there is no data Raise exp, return undefined */
+    let popupElem = document.createElement("div");
+    let popupSVGElem = document.createElement("div");
+    let node = document.createTextNode("Station name: " + row['title']);
+    let node1 = document.createTextNode(" dataset_id: " + row['datasetID']);
+    let chartTask = createChartAsync(popupElem, row);
+    chartTask
+        .then(canvas => {
+            popupElem.appendChild(node);
+            popupElem.appendChild(node1);
+            popupElem.appendChild(canvas);
+        }).catch(() => {
+            document.createTextNode('No Data Found');
+        });
+    // let svgNode = createSVG(popupSVGElem, row); //** Somthing else when there is no data Raise exp, return undefined */
     popupElem.appendChild(node);
     popupElem.appendChild(node1);
-    popupElem.appendChild(svgNode);
+    // popupElem.appendChild(svgNode);
     return popupElem;
 }
 
@@ -94,20 +103,18 @@ function createSVG(popupSVGElem, row) {
     //Read the data
 
     let url = dataurl('csv',
-            row['datasetID'],
-            'time%2Csurface_temp_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z') //* dynamic coding (return what variables are there)
-
+        row['datasetID'],
+        'time%2Csurface_temp_avg&time%3E=2018-01-21&time%3C=2020-01-29T22%3A00%3A01Z') //* dynamic coding (return what variables are there)
     d3.csv(url,
         // When reading the csv, I must format variables:
-        function(d) {
+        function (d) {
             return {
                 date: d3.utcParse("%Y-%m-%dT%H:%M:%SZ")(d.time),
                 value: d.surface_temp_avg
             }
-
         },
         // Now I can use this dataset:
-        function(error, data) {
+        function (error, data) {
             if (error) {
                 // Handle error
                 console.group('CSV Errors'); //******************* */
@@ -118,7 +125,7 @@ function createSVG(popupSVGElem, row) {
 
             // Add X axis --> it is a date format
             var x = d3.scaleTime()
-                .domain(d3.extent(data, function(d) {
+                .domain(d3.extent(data, function (d) {
                     return d.date;
                 }))
                 .range([0, width]);
@@ -128,7 +135,7 @@ function createSVG(popupSVGElem, row) {
 
             // Add Y axis
             var y = d3.scaleLinear()
-                .domain([0, d3.max(data, function(d) {
+                .domain([0, d3.max(data, function (d) {
                     return +d.value;
                 })])
                 .range([height, 0]);
@@ -158,13 +165,13 @@ function createSVG(popupSVGElem, row) {
                 .attr("stroke", "steelblue")
                 .attr("stroke-width", 1.5)
                 .attr("d", d3.line()
-                    .x(function(d) {
+                    .x(function (d) {
                         return x(d.date)
                     })
-                    .y(function(d) {
+                    .y(function (d) {
                         return y(d.value)
                     })
-                    .defined(function(d) {
+                    .defined(function (d) {
                         return !isNaN(d.value);
                     })
                 )
@@ -172,6 +179,50 @@ function createSVG(popupSVGElem, row) {
         })
 
     return popupSVGElem;
+}
+
+async function createChartAsync(popupElem, row) {
+    const canvas = document.createElement('canvas');
+    popupElem.appendChild(canvas);
+
+    //* dynamic coding (return what variables are there)
+    let dataUrl = dataurl(
+        'csv',
+        row['datasetID'],
+        'time%2Csurface_temp_avg&time%3E=2013-01-21&time%3C=2020-01-29T22%3A00%3A01Z'
+    );
+
+    const abortHandler = new AbortController();
+    const timeout = setTimeout(() => abortHandler.abort(), 5000);
+
+    const response = await fetch(dataUrl, {
+        signal: abortHandler.signal
+    });
+    clearTimeout(timeout);
+    if (response.status !== 200) {
+        throw new Error(`HTTP code: ${response.status}\nURL: ${dataUrl}`);
+    }
+    const csv = parseCsv(await response.text());
+    const data = formatDataset(csv, 'surface_temp_avg');
+    const chart = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        options: {
+            //   responsive: false,
+            maintainAspectRatio: true,
+        },
+        data: {
+            labels: data.map(d => d.month),
+            datasets: [{
+                label: 'Surface Temperature',
+                data: data.map(d => d.values),
+                backgroundColor: 'rgba(240, 71, 41, 0.2)',
+                borderColor: 'rgba(240, 71, 41, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+    return canvas;
 }
 
 // function retrieveStationData(stationCoordArray){
@@ -202,12 +253,14 @@ function markerClick(e) {
 
 function makeOnClick(row) {
 
-    return function(e) {
+    return function (e) {
         var coords = e.target.getLatLng();
-        var popup = L.popup()
+        var popup = L.popup({
+                minWidth: 500
+            }, undefined)
             .setLatLng(coords)
             .setContent(popupFunc(row))
-            .openOn(map);
+            .openOn(map)
     }
 
 }
@@ -252,6 +305,13 @@ function handleData(data) {
 //Fetching .json file using URL
 fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2Caccessible%2Cinstitution%2CdataStructure%2Ccdm_data_type%2Cclass%2Ctitle%2CminLongitude%2CmaxLongitude%2ClongitudeSpacing%2CminLatitude%2CmaxLatitude%2ClatitudeSpacing%2CminAltitude%2CmaxAltitude%2CminTime%2CmaxTime%2CtimeSpacing%2Cgriddap%2Csubset%2Ctabledap%2CMakeAGraph%2Csos%2Cwcs%2Cwms%2Cfiles%2Cfgdc%2Ciso19115%2Cmetadata%2CsourceUrl%2CinfoUrl%2Crss%2Cemail%2CtestOutOfDate%2CoutOfDate%2Csummary")
     .then(response => {
+        // Check if data was successfully fetched
+        if (response.status !== 200) {
+            // If not, throw error
+            throw new Error(`Status code: ${response.status}`);
+        }
+
+        // Return the object from body of request
         return response.json()
     })
     .then(data => {
@@ -265,7 +325,8 @@ fetch("https://www.smartatlantic.ca/erddap/tabledap/allDatasets.json?datasetID%2
         })
         return dict;
     })
-    .then(data => handleData(data));
+    .then(data => handleData(data))
+    .catch(console.error);
 
 //building data url
 function dataurl(datatype, stationname, query) {

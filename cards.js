@@ -25,7 +25,7 @@ request.onload = function () {
     data.result.forEach(station => {
       const getDataURL = function (stationname) {
         // "https://www.smartatlantic.ca/erddap/tabledap/SMA_st_johns.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z"
-        let theurl = `https://www.smartatlantic.ca/erddap/tabledap/${stationname}.csv?time%2Cwind_spd_avg&time%3E=2018-11-21&time%3C=2020-01-29T22%3A00%3A01Z`
+        let theurl = `https://www.smartatlantic.ca/erddap/tabledap/${stationname}.csv?time%2Cwind_spd_avg&time%3E=2013-07-21&time%3C=2020-01-29T22%3A00%3A01Z`
         return theurl;
       }
 
