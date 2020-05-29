@@ -42,14 +42,22 @@ request.onload = function () {
         .then(dat => {
           const card = document.createElement('div');
           card.setAttribute('class', 'card'); //taking stuff from .card class in css
+          const chartCanvas = document.createElement('canvas');
+          chartCanvas.style.width = '100%';
 
+          chartCanvas.onresize = function(ev) {
+            console.log('Chart resizing');
+            // ev.currentTarget.setAttribute('width', '552');
+            // ev.currentTarget.setAttribute('height', '276');
+          }
           const h1 = document.createElement('h1');
-          h1.ondblclick = () => {
+          
+          const onDoubleClick = () => {
             let extended_card = document.getElementById('extended-card');
             extended_card.style.display = 'block';//
             // let extended_card_content = document.querySelector('#content');
             let extended_card_content = document.getElementById('content');
-            
+
             extended_card_content.innerHTML = '';
             let canvas = document.createElement('canvas'); //html element 
             extended_card_content.appendChild(canvas);
@@ -57,8 +65,8 @@ request.onload = function () {
             let url = getDataURL(stationId)
             const abortHandler = new AbortController(); // for timeout of requests
             const timeout = setTimeout(() => abortHandler.abort(), 5000);
-            
-            fetch(url, {signal: abortHandler.signal})
+
+            fetch(url, { signal: abortHandler.signal })
               .then((response) => {
                 if (response.status !== 200) {
                   throw new Error('No Content Found')
@@ -94,7 +102,51 @@ request.onload = function () {
           }
 
           h1.textContent = "Station Name:\n" + stationId;
-          
+
+          //#region Chart Fetching
+          let url = getDataURL(stationId)
+            const abortHandler = new AbortController(); // for timeout of requests
+            const timeout = setTimeout(() => abortHandler.abort(), 5000);
+
+            fetch(url, { signal: abortHandler.signal })
+              .then((response) => {
+                if (response.status !== 200) {
+                  throw new Error('No Content Found');
+                }
+                return response.text();
+              })
+              .then(data => {
+                data = parseCsv(data);
+                data = formatDataset(data);
+                
+                card.appendChild(chartCanvas);
+                // console.log(data);
+                const chart = new Chart(chartCanvas.getContext('2d'), {
+                  type: 'line',
+                  options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                  },
+                  data: {
+                    labels: data.map(d => d.month),
+                    datasets: [{
+                      label: 'Monthly Wind Speed',
+                      data: data.map(d => d.values),
+                      backgroundColor: 'rgba(240, 71, 41, 0.2)',
+                      borderColor: 'rgba(240, 71, 41, 1)',
+                      borderWidth: 1
+                    }]
+                  }
+                });
+              })
+              .catch((err) => {
+                console.error(err);
+                const message = document.createElement('p');
+                message.textContent = 'No Chart';
+                card.appendChild(message);
+              }).finally(() => clearTimeout(timeout));
+          //#endregion
+
           //h1.innerHTML = `Station Name:<br/><a href=/view_card.html?name=${station}>${station}</a>`
 
           const p = document.createElement('p');
@@ -102,64 +154,82 @@ request.onload = function () {
 
           container.appendChild(card);
           card.appendChild(h1);
-          card.appendChild(p);
+          // card.appendChild(chartCanvas);
+          // card.appendChild(p);
           // console.log(dat.result.notes_translated.en)
         });
-    });
-  } else {
-    const errorMessage = document.createElement('marquee');
-    errorMessage.textContent = `Gah, it's not working!`;
-    app.appendChild(errorMessage);
-  }
-}
-request.send();
-
-function parseCsv(csvData) {
-  let lines = csvData.split('\n')
-  let data = [];
-  
-  let titles = lines[0].split(',')
-
-  // checks if there is any data availabe!
-  if (lines.length === 0 || titles.length === 0) {
-    console.error('No values found');
-    return;
-  }
-
-  for (let i = 2; i < lines.length; i++) {
-    const [dateStr, windStr] = lines[i].split(',');
-    
-    // NOTE: 'moment.js' is a library for date
-    // parse date
-    let date = moment(dateStr);
-
-    // parse wind speed
-    let windSpd = Number.parseFloat(windStr);
-
-    // if date or wind speed is invalid, skip the loop
-    if (!date || isNaN(windSpd)) {
-      continue;
+      });
+    } else {
+      const errorMessage = document.createElement('marquee');
+      errorMessage.textContent = `Gah, it's not working!`;
+      app.appendChild(errorMessage);
     }
-    //data frame to access columns via the title 
-    data.push({
-      [titles[0]]: date,
-      [titles[1]]: windSpd
-    });
-  }
-  return data;
 }
+  request.send();
 
-/**
- * Parse dataset to be shown by months and the average wind_spd of that month
- * @param dataset dataset with properties {time: Moment, wind_spd_avg: number}
- */
-function formatDataset(dataset) {
-  return dataset
-    .GroupBy(d => d.time.format('MM/YYYY'))
-    .Distinct() // for enforcing unique values
-    .Select(grp => ({
-      month: grp.Key,
-      values: grp.Sum(d => d.wind_spd_avg) / grp.Select(grp => grp.time).Count()
-    }))
-    .ToArray();
-}
+  function parseCsv(csvData) {
+    let lines = csvData.split('\n')
+    let data = [];
+
+    let titles = lines[0].split(',')
+
+    // checks if there is any data availabe!
+    if (lines.length === 0 || titles.length === 0) {
+      console.error('No values found');
+      return;
+    }
+
+    for (let i = 2; i < lines.length; i++) {
+      const [dateStr, windStr] = lines[i].split(',');
+
+      // NOTE: 'moment.js' is a library for date
+      // parse date
+      let date = moment(dateStr);
+
+      // parse wind speed
+      let windSpd = Number.parseFloat(windStr);
+
+      // if date or wind speed is invalid, skip the loop
+      if (!date || isNaN(windSpd)) {
+        continue;
+      }
+      //data frame to access columns via the title 
+      data.push({
+        [titles[0]]: date,
+        [titles[1]]: windSpd
+      });
+    }
+    return data;
+  }
+
+  /**
+   * Parse dataset to be shown by months and the average wind_spd of that month
+   * @param dataset dataset with properties {time: Moment, wind_spd_avg: number}
+   */
+  function formatDataset(dataset) {
+    return dataset
+      .GroupBy(d => d.time.format('MM/YYYY'))
+      .Distinct() // for enforcing unique values
+      .Select(grp => ({
+        month: grp.Key,
+        values: grp.Sum(d => d.wind_spd_avg) / grp.Select(grp => grp.time).Count()
+      }))
+      .ToArray();
+  }
+
+//#region Rewrite
+// fetch('https://cioosatlantic.ca/ckan/api/3/action/package_list', { method: 'GET', })
+//   .then(response => {
+//     if (response.ok) {
+//       throw new Error('Some sort of error occured');
+//     }
+//     return response.json();
+//   }).then(data => {
+
+//     });
+//   }).catch(() => {
+//     const errorMessage = document.createElement('marquee');
+//     errorMessage.textContent = 'Gah, it\'s not working';
+//     app.appendChild(errorMessage);
+//   })
+//#endregion
