@@ -35,11 +35,6 @@ var OpenTopoMap = L.tileLayer(themes.default.url, {
 
 OpenTopoMap.addTo(map);
 
-var markers = {
-    red: {},
-    blue: {}
-}
-
 // Event listener to listen to change in theme selection
 document.getElementById('theme-selector').addEventListener('change', function (ev) {
     let theme = themes[ev.currentTarget.value];
@@ -182,6 +177,7 @@ function createSVG(popupSVGElem, row) {
 }
 
 async function createChartAsync(popupElem, row) {
+    const divContainer = document.createElement('div');
     const canvas = document.createElement('canvas');
     popupElem.appendChild(canvas);
 
@@ -203,6 +199,8 @@ async function createChartAsync(popupElem, row) {
         throw new Error(`HTTP code: ${response.status}\nURL: ${dataUrl}`);
     }
     const csv = parseCsv(await response.text());
+    const minDate = csv.Min(x => x.time);
+    const maxDate = csv.Max(x => x.time);
     const data = formatDataset(csv, 'surface_temp_avg');
     const chart = new Chart(canvas.getContext('2d'), {
         type: 'line',
@@ -222,7 +220,19 @@ async function createChartAsync(popupElem, row) {
         }
     });
 
-    return canvas;
+    if (minDate && maxDate) {
+        const from = document.createElement('p');
+        from.textContent = `Max Date: ${minDate.format('MM/YYYY')}`;
+        const toText = document.createElement('p');
+        toText.textContent = `Min Date: ${maxDate.format('MM/YYYY')}`;
+        const typeText = document.createElement('p');
+        typeText.textContent = `Data Type: Average Surface Temperature`;
+        divContainer.append(from, toText, typeText);
+    }
+
+    divContainer.appendChild(canvas);
+
+    return divContainer;
 }
 
 // function retrieveStationData(stationCoordArray){

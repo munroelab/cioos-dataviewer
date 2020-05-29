@@ -8,6 +8,7 @@
   <title>Metadata viewer</title>
 
   <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
   <script src="https://unpkg.com/linqify@1.2.1"></script>
@@ -24,7 +25,23 @@
 </head>
 
 <body>
-
+  <h1 style="background-color: white; background-image: none; padding: 0; margin-block-start: 0.67em; margin-block-end: 0.67em; margin-inline-start: 0px; margin-inline-end: 0px;">
+    <div class="header" style="padding: 10px 10px;">
+      <a href="#default" class="logo">CIOOS Atlantic</a>
+      <div class="header-right">
+        <span>
+          <select id='theme-selector'>
+            <option value="default">Default</option>
+            <option value="classic">Classic</option>
+            <option value="nature">Nature</option>
+          </select>
+        </span>
+        <a href="index.html">Home</a>
+        <a href="documentation.html">Documents</a>
+        <a class="active" href="cards.html">Meta data cards</a>
+      </div>
+    </div>
+  </h1>
   <div id='extended-card'
     style="position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.1); display: none; z-index: 10;" onclick="onCardClose()">
     <div style="display: flex; width: 100%; height: 100%; justify-content: center; align-items: center;">

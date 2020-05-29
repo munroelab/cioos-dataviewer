@@ -4,11 +4,29 @@
 <head>
 
   <link rel="stylesheet" type="text/css" href="documentation.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" />
 
 </head>
 
 <body>
+  <h1>
+    <div class="header">
+      <a href="#default" class="logo">CIOOS Atlantic</a>
+      <div class="header-right">
+        <span>
+          <select id='theme-selector'>
+            <option value="default">Default</option>
+            <option value="classic">Classic</option>
+            <option value="nature">Nature</option>
+          </select>
+        </span>
+        <a href="index.html">Home</a>
+        <a class="active" href="documentation.html">Documents</a>
+        <a href="cards.html">Meta data cards</a>
+      </div>
+    </div>
+  </h1>
   <article class="webcontainer">
     <nav class="nav scroll">
       <div class="nav_container">
@@ -55,7 +73,7 @@
             <p>In order to have a map as below we need to create our initial files
               as shown in the following.</p>
 
-            <img src="./pics/initialmap.png" width="100%" height="100%" style=" ce">
+            <img src="./pics/initialmap.png" width="100%" height="100%">
 
             <div class="filename">index.html</div>
             <pre><code class="language-html">
